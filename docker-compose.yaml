@@ -1,0 +1,43 @@
+version: '3'
+
+
+# Each servie runs in a separate container
+services:
+
+    #the name of the service
+    customer-orders:
+          container_name: customer-orders
+          image: postgres:latest
+          restart: always
+          environment: 
+                DATABASE_HOST: 127.0.0.1
+                POSTGRES_USER: postgres
+                POSTGRES_PASSWORD: password
+                POSTGRES_PORT: 6432
+                POSTGRES_DB: orders-db
+                PGDATA: /var/lib/postgresql/data
+          ports:
+                - "6432:5432"
+          volumes: 
+                - pgdatasource:/var/lib/postgresql/data
+
+
+
+    pgadmin: 
+          image: dpage/pgadmin4:latest
+          container_name: pgAdmin
+          restart: always
+          environment: 
+                PGADMIN_DEFAULT_EMAIL: crose275@gmail.com
+                PGADMIN_DEFAULT_PASSWORD: password
+          ports:
+               - "8080:80"
+          volumes:
+              - pgadmin-data:/var/lib/pgadmin
+          depends_on:
+              - customer-orders
+
+
+volumes:
+  pgdatasource:
+  pgadmin-data:
